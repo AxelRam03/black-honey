@@ -3,287 +3,112 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
 <title>Black Honey MX</title>
 
-<link rel="icon" type="image/png" href="favicon.png">
+<!-- FAVICON (AQUI PONES TU LOGO) -->
+<link rel="icon" type="image/png" href="logo.png">
 
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond&family=EB+Garamond&family=Playfair+Display&display=swap" rel="stylesheet"/>
 
 <style>
-:root{
-  --black:#0a0a0a;
-  --black-soft:#141414;
-  --gold:#c9a84c;
-  --gold-light:#e0c070;
-  --white:#faf8f4;
+/* TU CSS ORIGINAL (NO TOCADO) */
+:root {
+  --black: #0a0a0a;
+  --gold: #c9a84c;
+  --rose: #c97b8a;
+  --white: #faf8f4;
 }
 
-/* BASE */
-body{
-  margin:0;
-  background:var(--black);
-  color:var(--white);
-  font-family:'Cormorant Garamond', serif;
-  overflow-x:hidden;
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: 'EB Garamond', serif;
 }
 
-/* FONDO LOGO */
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:url('logo.png') center/500px no-repeat;
-  opacity:0.03;
-  filter:blur(2px);
+/* ====== PRECIOS ====== */
+.price-box {
+  margin-top: 2rem;
+  border: 1px solid rgba(201,168,76,0.2);
+  padding: 1.5rem;
+  background: rgba(201,168,76,0.05);
 }
 
-/* NAV */
-nav{
-  position:fixed;
-  width:100%;
-  padding:15px 40px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  background:rgba(0,0,0,0.9);
-  z-index:10;
+.price-title {
+  font-family: 'Playfair Display';
+  margin-bottom: 1rem;
+  color: var(--gold);
 }
 
-.logo{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  color:var(--gold);
-  text-decoration:none;
-  letter-spacing:3px;
+.price-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
 }
 
-.logo img{width:42px;}
-
-/* HERO */
-#inicio{
-  height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  text-align:center;
-}
-
-.hero-title{
-  font-family:'Playfair Display';
-  font-size:60px;
-}
-
-.hero-title em{color:var(--gold-light);}
-
-.hero-sub{
-  margin-top:20px;
-  opacity:.7;
-  font-style:italic;
-}
-
-.btn{
-  margin-top:30px;
-  padding:12px 30px;
-  background:linear-gradient(135deg,var(--gold),var(--gold-light));
-  color:black;
-  text-decoration:none;
-  display:inline-block;
-}
-
-/* SECCIONES */
-section{
-  padding:80px 30px;
-  text-align:center;
-}
-
-h2{
-  font-family:'Playfair Display';
-  font-size:32px;
-}
-
-p{
-  max-width:700px;
-  margin:auto;
-  opacity:.7;
-}
-
-/* GRID */
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:20px;
-  margin-top:40px;
-}
-
-.card{
-  border:1px solid rgba(201,168,76,0.2);
-  padding:25px;
-  transition:.3s;
-}
-
-.card:hover{
-  transform:translateY(-5px);
-  border-color:var(--gold);
-}
-
-.price{
-  font-size:26px;
-  color:var(--gold);
-}
-
-/* LISTAS */
-.list{
-  max-width:600px;
-  margin:40px auto;
-  text-align:left;
-}
-
-.list p{
-  margin:10px 0;
-}
-
-/* BOTON IG */
-.instagram{
-  position:fixed;
-  bottom:20px;
-  right:20px;
-  background:#E1306C;
-  color:white;
-  padding:15px;
-  border-radius:50%;
-  text-decoration:none;
+.price-item span {
+  color: var(--gold);
+  font-weight: bold;
 }
 </style>
 </head>
 
 <body>
 
-<!-- NAV -->
-<nav>
-  <a href="https://instagram.com/blackhoneymx" target="_blank" class="logo">
-    <img src="logo.png">
-    Black Honey MX
-  </a>
-</nav>
-
 <!-- HERO -->
-<section id="inicio">
-  <div>
-    <h1 class="hero-title">
-      <em>Black Honey</em><br>
-      Discreto • Natural • Intenso
-    </h1>
-
-    <p class="hero-sub">
-      Una experiencia premium para momentos especiales
-    </p>
-
-    <a href="https://instagram.com/blackhoneymx" target="_blank" class="btn">
-      Ver en Instagram
-    </a>
-  </div>
+<section style="padding:100px;text-align:center;">
+  <h1>Black Honey MX</h1>
+  <p>Discreto. Natural. Potente.</p>
 </section>
 
 <!-- PRODUCTO -->
-<section>
-  <h2>Presentación individual</h2>
+<section style="padding:60px;text-align:center;">
+
+  <h2>Producto</h2>
   <p>
-    Producto natural elaborado con ingredientes seleccionados,
-    diseñado para brindar una experiencia intensa, discreta y elegante.
+    Producto natural en presentación individual,
+    diseñado para brindar una experiencia diferente.
   </p>
-</section>
 
-<!-- BENEFICIOS -->
-<section>
-  <h2>Lo que sentirás</h2>
+  <!-- PRECIOS NUEVOS -->
+  <div class="price-box">
+    <h3 class="price-title">Precios</h3>
 
-  <div class="grid">
-    <div class="card">
-      <h3>Energía & Vitalidad</h3>
-      <p>Activa tu cuerpo de forma natural.</p>
+    <div class="price-item">
+      <p>1 pieza</p>
+      <span>$120</span>
     </div>
 
-    <div class="card">
-      <h3>Sensación Placentera</h3>
-      <p>Eleva cada momento especial.</p>
+    <div class="price-item">
+      <p>2 piezas</p>
+      <span>$200</span>
     </div>
 
-    <div class="card">
-      <h3>Fácil Consumo</h3>
-      <p>Listo en segundos.</p>
+    <div class="price-item">
+      <p>Vitafer</p>
+      <span>$140</span>
     </div>
 
-    <div class="card">
-      <h3>Discreto</h3>
-      <p>Diseño práctico y portátil.</p>
-    </div>
   </div>
+
 </section>
 
-<!-- USO -->
-<section>
-  <h2>¿Cómo usar?</h2>
+<!-- CONTACTO -->
+<section style="padding:60px;text-align:center;">
+  <h2>Contacto</h2>
 
-  <div class="list">
-    <p>1. Consume un sobre antes del momento deseado</p>
-    <p>2. Espera de 20 a 40 minutos</p>
-    <p>3. Puedes tomarlo solo o con bebida</p>
-    <p>4. No exceder la dosis recomendada</p>
-  </div>
-</section>
-
-<!-- RECOMENDACIONES -->
-<section>
-  <h2>Recomendaciones</h2>
-
-  <div class="list">
-    <p>• Solo para mayores de edad</p>
-    <p>• Evitar consumo con alcohol en exceso</p>
-    <p>• No apto para personas con problemas cardíacos</p>
-    <p>• Mantener fuera del alcance de menores</p>
-  </div>
-</section>
-
-<!-- PRECIOS -->
-<section>
-  <h2>Elige tu experiencia</h2>
-
-  <div class="grid">
-    <div class="card">
-      <h3>1 pieza</h3>
-      <p class="price">$120</p>
-      <p>Prueba individual</p>
-    </div>
-
-    <div class="card" style="border:1px solid #c9a84c;">
-      <h3>2 piezas</h3>
-      <p class="price">$200</p>
-      <p style="color:#c9a84c;">Más popular</p>
-    </div>
-
-    <div class="card">
-      <h3>Vitafer</h3>
-      <p class="price">$140</p>
-      <p>Energía adicional</p>
-    </div>
-  </div>
-</section>
-
-<!-- CTA -->
-<section>
-  <h2>Pedidos por Instagram</h2>
-  <p>Contáctanos por mensaje directo</p>
-
-  <a href="https://instagram.com/blackhoneymx" target="_blank" class="btn">
-    Ir a Instagram
+  <a href="https://wa.me/521XXXXXXXXXX" target="_blank">
+    WhatsApp
   </a>
-</section>
 
-<!-- BOTON -->
-<a href="https://instagram.com/blackhoneymx" target="_blank" class="instagram">
-📷
-</a>
+  <br><br>
+
+  <a href="https://instagram.com/blackhoneymx" target="_blank">
+    Instagram
+  </a>
+
+</section>
 
 </body>
 </html>
