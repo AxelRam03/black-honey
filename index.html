@@ -3,112 +3,840 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
 <title>Black Honey MX</title>
-
-<!-- FAVICON (AQUI PONES TU LOGO) -->
-<link rel="icon" type="image/png" href="logo.png">
-
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond&family=EB+Garamond&family=Playfair+Display&display=swap" rel="stylesheet"/>
-
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet"/>
 <style>
-/* TU CSS ORIGINAL (NO TOCADO) */
-:root {
-  --black: #0a0a0a;
-  --gold: #c9a84c;
-  --rose: #c97b8a;
-  --white: #faf8f4;
-}
+  :root {
+    --black: #0a0a0a;
+    --black-soft: #141414;
+    --black-mid: #1c1c1c;
+    --gold: #c9a84c;
+    --gold-light: #e0c070;
+    --gold-pale: #f5e6b8;
+    --rose: #c97b8a;
+    --rose-light: #e8a8b5;
+    --rose-pale: #f7dde4;
+    --white: #faf8f4;
+    --white-dim: rgba(250,248,244,0.7);
+    --white-faint: rgba(250,248,244,0.12);
+  }
 
-body {
-  background: var(--black);
-  color: var(--white);
-  font-family: 'EB Garamond', serif;
-}
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* ====== PRECIOS ====== */
-.price-box {
-  margin-top: 2rem;
-  border: 1px solid rgba(201,168,76,0.2);
-  padding: 1.5rem;
-  background: rgba(201,168,76,0.05);
-}
+  html { scroll-behavior: smooth; }
 
-.price-title {
-  font-family: 'Playfair Display';
-  margin-bottom: 1rem;
-  color: var(--gold);
-}
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'EB Garamond', serif;
+    overflow-x: hidden;
+    cursor: default;
+  }
 
-.price-item {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 0.5rem;
-  font-size: 1rem;
-}
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--black); }
+  ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
 
-.price-item span {
-  color: var(--gold);
-  font-weight: bold;
-}
+  /* ── GRAIN OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 1000; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.35;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 900;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.4rem 3rem;
+    background: linear-gradient(to bottom, rgba(10,10,10,0.98), transparent);
+    transition: background 0.4s;
+  }
+  nav.scrolled { background: rgba(10,10,10,0.97); border-bottom: 1px solid rgba(201,168,76,0.12); }
+
+  .logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.35rem; font-weight: 300; letter-spacing: 5px;
+    color: var(--gold-light); text-decoration: none; text-transform: uppercase;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .logo-hex {
+    width: 28px; height: 28px;
+    background: none;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .logo-hex svg { width: 28px; height: 28px; }
+
+  .nav-links {
+    display: flex; gap: 2.5rem; list-style: none;
+  }
+  .nav-links a {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.78rem; letter-spacing: 3px; text-transform: uppercase;
+    color: rgba(250,248,244,0.55); text-decoration: none;
+    transition: color 0.3s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: ''; position: absolute; bottom: -4px; left: 0; right: 0; height: 1px;
+    background: var(--gold); transform: scaleX(0); transition: transform 0.3s;
+  }
+  .nav-links a:hover { color: var(--gold-light); }
+  .nav-links a:hover::after { transform: scaleX(1); }
+
+  .nav-toggle {
+    display: none; background: none; border: none; cursor: pointer;
+    flex-direction: column; gap: 5px; padding: 4px;
+  }
+  .nav-toggle span {
+    display: block; width: 22px; height: 1px; background: var(--gold-light);
+    transition: all 0.3s;
+  }
+
+  /* ── HERO ── */
+  #inicio {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+    padding: 0 2rem;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 70% at 60% 40%, #1a1208 0%, #0a0a0a 70%);
+  }
+
+  .hero-honeycomb {
+    position: absolute; inset: 0; opacity: 0.06;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3E%3Cpath d='M28 66L0 50V16L28 0l28 16v34L28 66zm0-6l22-13V19L28 6 6 19v28l22 13z' fill='%23c9a84c'/%3E%3C/svg%3E");
+    background-size: 56px 100px;
+  }
+
+  .hero-glow {
+    position: absolute; top: 20%; right: 15%;
+    width: 500px; height: 500px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-glow-rose {
+    position: absolute; bottom: 15%; left: 10%;
+    width: 350px; height: 350px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,123,138,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-content {
+    position: relative; z-index: 2;
+    text-align: center; max-width: 700px;
+    animation: fadeUp 1.2s ease both;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.72rem; letter-spacing: 6px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 2rem; opacity: 0.9;
+    animation: fadeUp 1s ease 0.2s both;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 9vw, 5.5rem);
+    font-weight: 400; line-height: 1.08;
+    color: var(--white);
+    margin-bottom: 1.8rem;
+    animation: fadeUp 1s ease 0.4s both;
+  }
+  .hero-title em {
+    font-style: italic; color: var(--gold-light);
+  }
+
+  .hero-sub {
+    font-family: 'EB Garamond', serif;
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    font-style: italic; font-weight: 400;
+    color: var(--white-dim); margin-bottom: 3rem;
+    letter-spacing: 1px;
+    animation: fadeUp 1s ease 0.6s both;
+  }
+
+  .hero-divider {
+    width: 60px; height: 1px; background: var(--gold);
+    margin: 0 auto 3rem; opacity: 0.6;
+    animation: scaleIn 1s ease 0.8s both;
+  }
+
+  .btn-primary {
+    display: inline-block;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.82rem; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--black);
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+    padding: 1rem 2.8rem;
+    text-decoration: none;
+    border: none; cursor: pointer;
+    transition: all 0.3s;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    animation: fadeUp 1s ease 1s both;
+  }
+  .btn-primary:hover {
+    background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold-pale) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(201,168,76,0.25);
+  }
+
+  .hero-scroll {
+    position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.65rem; letter-spacing: 4px; text-transform: uppercase;
+    color: rgba(201,168,76,0.5); animation: fadeIn 2s ease 1.5s both;
+  }
+  .scroll-line {
+    width: 1px; height: 40px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scrollPulse 2s ease infinite;
+  }
+
+  /* ── SECTION SHARED ── */
+  section { padding: 7rem 2rem; }
+
+  .section-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.68rem; letter-spacing: 6px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 1.2rem; opacity: 0.8;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 400; line-height: 1.2;
+    margin-bottom: 1.5rem;
+  }
+  .section-title em { font-style: italic; color: var(--gold-light); }
+
+  .container { max-width: 1100px; margin: 0 auto; }
+
+  /* ── PRODUCT SECTION ── */
+  #producto {
+    background: var(--black-soft);
+    position: relative; overflow: hidden;
+  }
+  #producto::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+    opacity: 0.3;
+  }
+
+  .product-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 5rem; align-items: center;
+  }
+
+  .product-visual {
+    position: relative; display: flex; align-items: center; justify-content: center;
+    min-height: 400px;
+  }
+
+  .packet-wrapper {
+    position: relative;
+    animation: floatAnim 4s ease-in-out infinite;
+  }
+
+  .packet-glow {
+    position: absolute; inset: -40px;
+    background: radial-gradient(circle, rgba(201,168,76,0.15) 0%, transparent 65%);
+    border-radius: 50%;
+  }
+
+  .packet-svg { width: 220px; filter: drop-shadow(0 20px 60px rgba(201,168,76,0.2)); }
+
+  .product-text .section-label { display: block; }
+
+  .product-desc {
+    font-size: 1.12rem; line-height: 1.85;
+    color: var(--white-dim); margin-bottom: 2.5rem;
+    font-style: italic;
+  }
+
+  .product-tags {
+    display: flex; flex-wrap: wrap; gap: 0.7rem;
+  }
+  .tag {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.72rem; letter-spacing: 3px; text-transform: uppercase;
+    border: 1px solid rgba(201,168,76,0.3);
+    padding: 0.45rem 1.2rem; color: var(--gold);
+    transition: all 0.3s;
+  }
+  .tag:hover { background: rgba(201,168,76,0.08); border-color: var(--gold); }
+
+  /* ── BENEFITS ── */
+  #beneficios {
+    background: var(--black);
+  }
+  .benefits-header { text-align: center; margin-bottom: 5rem; }
+
+  .benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 2px;
+  }
+
+  .benefit-card {
+    background: var(--black-soft);
+    padding: 3rem 2rem;
+    border: 1px solid rgba(201,168,76,0.07);
+    transition: all 0.4s; position: relative; overflow: hidden;
+    cursor: default;
+  }
+  .benefit-card::before {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(to right, var(--gold), var(--rose));
+    transform: scaleX(0); transition: transform 0.4s;
+  }
+  .benefit-card:hover { background: #161410; transform: translateY(-4px); }
+  .benefit-card:hover::before { transform: scaleX(1); }
+
+  .benefit-icon {
+    width: 48px; height: 48px; margin-bottom: 1.5rem;
+    background: rgba(201,168,76,0.08);
+    border: 1px solid rgba(201,168,76,0.18);
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 2px;
+  }
+  .benefit-icon svg { width: 22px; height: 22px; }
+
+  .benefit-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem; margin-bottom: 0.8rem;
+    color: var(--white);
+  }
+
+  .benefit-desc {
+    font-size: 0.9rem; line-height: 1.7;
+    color: rgba(250,248,244,0.45);
+    font-style: italic;
+  }
+
+  /* ── USO ── */
+  #uso {
+    background: var(--black-soft);
+    position: relative;
+  }
+  #uso::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(to right, transparent, var(--rose), transparent);
+    opacity: 0.2;
+  }
+
+  .uso-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 5rem; align-items: start;
+  }
+
+  .steps-list {
+    list-style: none; display: flex; flex-direction: column; gap: 2rem;
+    margin-top: 1rem;
+  }
+  .step {
+    display: flex; gap: 1.5rem; align-items: flex-start;
+  }
+  .step-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem; font-weight: 300; color: rgba(201,168,76,0.25);
+    line-height: 1; min-width: 2.5rem; padding-top: 2px;
+  }
+  .step-body {}
+  .step-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem; margin-bottom: 0.3rem; color: var(--gold-light);
+  }
+  .step-desc {
+    font-size: 0.9rem; color: rgba(250,248,244,0.5);
+    font-style: italic; line-height: 1.6;
+  }
+
+  .uso-aside {
+    background: rgba(201,168,76,0.04);
+    border: 1px solid rgba(201,168,76,0.1);
+    padding: 2.5rem; margin-top: 1rem;
+  }
+
+  .aside-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.7rem; letter-spacing: 5px; text-transform: uppercase;
+    color: var(--rose-light); margin-bottom: 1.8rem;
+  }
+
+  .rec-list {
+    list-style: none; display: flex; flex-direction: column; gap: 1.2rem;
+  }
+  .rec-item {
+    display: flex; gap: 1rem; align-items: flex-start;
+    font-size: 0.9rem; line-height: 1.6; color: rgba(250,248,244,0.5);
+    font-style: italic;
+  }
+  .rec-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--rose);
+    margin-top: 8px; flex-shrink: 0; opacity: 0.6;
+  }
+
+  /* ── CONTACT ── */
+  #contacto {
+    background: var(--black);
+    text-align: center;
+  }
+
+  .contact-inner {
+    max-width: 540px; margin: 0 auto;
+  }
+
+  .contact-tagline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 3.5rem;
+  }
+
+  .contact-buttons {
+    display: flex; flex-direction: column; gap: 1rem; margin-bottom: 3rem;
+  }
+
+  .btn-wa {
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    background: none;
+    border: 1px solid rgba(255,255,255,0.12);
+    padding: 1.1rem 2rem; cursor: pointer; text-decoration: none;
+    color: var(--white); font-family: 'Cormorant Garamond', serif;
+    font-size: 0.9rem; letter-spacing: 3px; text-transform: uppercase;
+    transition: all 0.3s;
+  }
+  .btn-wa:hover {
+    background: rgba(37,211,102,0.08);
+    border-color: rgba(37,211,102,0.3);
+    color: #5de87a;
+  }
+
+  .btn-ig {
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    background: none;
+    border: 1px solid rgba(201,168,76,0.18);
+    padding: 1.1rem 2rem; cursor: pointer; text-decoration: none;
+    color: var(--white); font-family: 'Cormorant Garamond', serif;
+    font-size: 0.9rem; letter-spacing: 3px; text-transform: uppercase;
+    transition: all 0.3s;
+  }
+  .btn-ig:hover {
+    background: rgba(201,123,138,0.08);
+    border-color: rgba(201,123,138,0.3);
+    color: var(--rose-light);
+  }
+
+  .contact-note {
+    font-family: 'EB Garamond', serif;
+    font-size: 0.85rem; font-style: italic;
+    color: rgba(250,248,244,0.3); letter-spacing: 1px;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 4rem 2rem 2.5rem;
+    background: #060606;
+    border-top: 1px solid rgba(201,168,76,0.08);
+    text-align: center;
+  }
+
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem; letter-spacing: 6px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 0.8rem;
+  }
+
+  .footer-tagline {
+    font-family: 'EB Garamond', serif;
+    font-size: 0.95rem; font-style: italic;
+    color: rgba(250,248,244,0.25); margin-bottom: 2.5rem;
+    letter-spacing: 1px;
+  }
+
+  .footer-socials {
+    display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 2.5rem;
+  }
+  .footer-socials a {
+    width: 38px; height: 38px;
+    border: 1px solid rgba(201,168,76,0.15);
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(201,168,76,0.4); text-decoration: none;
+    transition: all 0.3s; font-size: 14px;
+  }
+  .footer-socials a:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(201,168,76,0.06);
+  }
+
+  .footer-legal {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase;
+    color: rgba(250,248,244,0.15);
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; } to { opacity: 1; }
+  }
+  @keyframes scaleIn {
+    from { transform: scaleX(0); } to { transform: scaleX(1); }
+  }
+  @keyframes floatAnim {
+    0%,100% { transform: translateY(0); }
+    50%      { transform: translateY(-14px); }
+  }
+  @keyframes scrollPulse {
+    0%,100% { opacity: 1; }
+    50%      { opacity: 0.2; }
+  }
+
+  .reveal {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1; transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 1.2rem 1.5rem; }
+    .nav-links { display: none; flex-direction: column; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(10,10,10,0.98); align-items: center; justify-content: center; gap: 2.5rem; z-index: 800; }
+    .nav-links.open { display: flex; }
+    .nav-links a { font-size: 1rem; letter-spacing: 5px; }
+    .nav-toggle { display: flex; z-index: 850; }
+
+    section { padding: 5rem 1.5rem; }
+
+    .product-grid,
+    .uso-grid { grid-template-columns: 1fr; gap: 3rem; }
+
+    .product-visual { min-height: 280px; order: -1; }
+    .packet-svg { width: 160px; }
+
+    .benefits-grid { grid-template-columns: 1fr 1fr; }
+
+    .hero-title { font-size: 2.8rem; }
+    .hero-sub { font-size: 1rem; }
+  }
+
+  @media (max-width: 480px) {
+    .benefits-grid { grid-template-columns: 1fr; }
+    nav { padding: 1rem 1.2rem; }
+    .logo { font-size: 1.1rem; letter-spacing: 3px; }
+  }
 </style>
 </head>
-
 <body>
 
-<!-- HERO -->
-<section style="padding:100px;text-align:center;">
-  <h1>Black Honey MX</h1>
-  <p>Discreto. Natural. Potente.</p>
-</section>
+<!-- ── NAV ── -->
+<nav id="navbar">
+  <a href="#inicio" class="logo">
+    <span class="logo-hex">
+      <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="14,2 25,8.5 25,21.5 14,28 3,21.5 3,8.5" fill="none" stroke="#c9a84c" stroke-width="1"/>
+        <polygon points="14,7 21,11 21,19 14,23 7,19 7,11" fill="rgba(201,168,76,0.12)" stroke="#c9a84c" stroke-width="0.6"/>
+        <circle cx="14" cy="15" r="2" fill="#c9a84c" opacity="0.8"/>
+        <path d="M14 13 Q12 17 14 19 Q16 17 14 13Z" fill="#c9a84c" opacity="0.6"/>
+      </svg>
+    </span>
+    Black Honey MX
+  </a>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="#inicio" onclick="closeNav()">Inicio</a></li>
+    <li><a href="#producto" onclick="closeNav()">Producto</a></li>
+    <li><a href="#beneficios" onclick="closeNav()">Beneficios</a></li>
+    <li><a href="#uso" onclick="closeNav()">Uso</a></li>
+    <li><a href="#contacto" onclick="closeNav()">Contacto</a></li>
+  </ul>
+  <button class="nav-toggle" id="nav-toggle" aria-label="Menú" onclick="toggleNav()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
 
-<!-- PRODUCTO -->
-<section style="padding:60px;text-align:center;">
-
-  <h2>Producto</h2>
-  <p>
-    Producto natural en presentación individual,
-    diseñado para brindar una experiencia diferente.
-  </p>
-
-  <!-- PRECIOS NUEVOS -->
-  <div class="price-box">
-    <h3 class="price-title">Precios</h3>
-
-    <div class="price-item">
-      <p>1 pieza</p>
-      <span>$120</span>
-    </div>
-
-    <div class="price-item">
-      <p>2 piezas</p>
-      <span>$200</span>
-    </div>
-
-    <div class="price-item">
-      <p>Vitafer</p>
-      <span>$140</span>
-    </div>
-
+<!-- ── HERO ── -->
+<section id="inicio">
+  <div class="hero-bg"></div>
+  <div class="hero-honeycomb"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow-rose"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Black Honey MX — Edición Exclusiva</p>
+    <h1 class="hero-title">Discreto.<br><em>Natural.</em><br>Potente.</h1>
+    <div class="hero-divider"></div>
+    <p class="hero-sub">"Una experiencia única para momentos especiales"</p>
+    <a href="#contacto" class="btn-primary">Pedir ahora</a>
   </div>
-
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>Descubrir</span>
+  </div>
 </section>
 
-<!-- CONTACTO -->
-<section style="padding:60px;text-align:center;">
-  <h2>Contacto</h2>
-
-  <a href="https://wa.me/521XXXXXXXXXX" target="_blank">
-    WhatsApp
-  </a>
-
-  <br><br>
-
-  <a href="https://instagram.com/blackhoneymx" target="_blank">
-    Instagram
-  </a>
-
+<!-- ── PRODUCTO ── -->
+<section id="producto">
+  <div class="container">
+    <div class="product-grid">
+      <div class="product-visual">
+        <div class="packet-glow"></div>
+        <div class="packet-wrapper">
+          <svg class="packet-svg" viewBox="0 0 220 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Packet body -->
+            <rect x="20" y="40" width="180" height="240" rx="8" fill="#111"/>
+            <rect x="20" y="40" width="180" height="240" rx="8" stroke="#c9a84c" stroke-width="0.8" opacity="0.5"/>
+            <!-- Top seal -->
+            <rect x="20" y="40" width="180" height="28" rx="4" fill="#1a1507"/>
+            <line x1="20" y1="67" x2="200" y2="67" stroke="#c9a84c" stroke-width="0.5" opacity="0.4"/>
+            <!-- Bottom seal -->
+            <rect x="20" y="252" width="180" height="28" rx="4" fill="#1a1507"/>
+            <line x1="20" y1="252" x2="200" y2="252" stroke="#c9a84c" stroke-width="0.5" opacity="0.4"/>
+            <!-- Honeycomb pattern subtle -->
+            <path d="M65 110 L85 100 L105 110 L105 130 L85 140 L65 130Z" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.2"/>
+            <path d="M105 110 L125 100 L145 110 L145 130 L125 140 L105 130Z" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.2"/>
+            <path d="M85 130 L105 120 L125 130 L125 150 L105 160 L85 150Z" fill="none" stroke="#c9a84c" stroke-width="0.5" opacity="0.2"/>
+            <!-- Gold accent bar -->
+            <rect x="50" y="175" width="120" height="1" fill="#c9a84c" opacity="0.35"/>
+            <!-- Logo text area -->
+            <text x="110" y="108" text-anchor="middle" font-family="Georgia, serif" font-size="8" fill="#c9a84c" opacity="0.5" letter-spacing="3">BLACK HONEY</text>
+            <text x="110" y="122" text-anchor="middle" font-family="Georgia, serif" font-size="18" fill="#c9a84c" font-weight="bold" letter-spacing="1">BH</text>
+            <text x="110" y="135" text-anchor="middle" font-family="Georgia, serif" font-size="7" fill="#c9a84c" opacity="0.4" letter-spacing="4">MX</text>
+            <!-- Drip illustration -->
+            <ellipse cx="110" cy="198" rx="5" ry="5" fill="#c9a84c" opacity="0.6"/>
+            <path d="M105 195 Q100 208 103 218 Q106 225 110 226 Q114 225 117 218 Q120 208 115 195 Z" fill="#c9a84c" opacity="0.5"/>
+            <!-- Tear notch -->
+            <polygon points="20,54 26,60 20,67" fill="#c9a84c" opacity="0.3"/>
+            <!-- Side lines detail -->
+            <line x1="30" y1="80" x2="30" y2="248" stroke="#c9a84c" stroke-width="0.4" opacity="0.12"/>
+            <line x1="190" y1="80" x2="190" y2="248" stroke="#c9a84c" stroke-width="0.4" opacity="0.12"/>
+            <!-- Rose accent dot -->
+            <circle cx="165" cy="228" r="3" fill="#c97b8a" opacity="0.4"/>
+            <circle cx="55" cy="228" r="3" fill="#c97b8a" opacity="0.4"/>
+          </svg>
+        </div>
+      </div>
+      <div class="product-text reveal">
+        <span class="section-label">El Producto</span>
+        <h2 class="section-title">Presentación <em>individual</em></h2>
+        <p class="product-desc">
+          Producto natural en presentación individual, diseñado para brindar una experiencia diferente.
+          Elaborado con ingredientes seleccionados, pensado para quienes valoran la calidad y la discreción.
+        </p>
+        <div class="product-tags">
+          <span class="tag">100% Natural</span>
+          <span class="tag">Uso individual</span>
+          <span class="tag">Fácil de llevar</span>
+          <span class="tag">Sin rastros</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
+<!-- ── BENEFICIOS ── -->
+<section id="beneficios">
+  <div class="container">
+    <div class="benefits-header reveal">
+      <p class="section-label">Por qué elegirnos</p>
+      <h2 class="section-title">Lo que <em>sentirás</em></h2>
+    </div>
+    <div class="benefits-grid">
+
+      <div class="benefit-card reveal reveal-delay-1">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+          </svg>
+        </div>
+        <h3 class="benefit-title">Energía & Vitalidad</h3>
+        <p class="benefit-desc">Una carga natural que activa tu cuerpo y despierta tu mejor versión.</p>
+      </div>
+
+      <div class="benefit-card reveal reveal-delay-2">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#c97b8a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+        </div>
+        <h3 class="benefit-title">Sensación Placentera</h3>
+        <p class="benefit-desc">Una experiencia que eleva cada momento especial a otro nivel.</p>
+      </div>
+
+      <div class="benefit-card reveal reveal-delay-3">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </div>
+        <h3 class="benefit-title">Fácil Consumo</h3>
+        <p class="benefit-desc">Listo en segundos. Sin preparación, sin complicaciones.</p>
+      </div>
+
+      <div class="benefit-card reveal reveal-delay-4">
+        <div class="benefit-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#c97b8a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+        </div>
+        <h3 class="benefit-title">Discreto & Portátil</h3>
+        <p class="benefit-desc">Diseño minimalista que cabe en cualquier lugar. Tu secreto, siempre contigo.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── USO ── -->
+<section id="uso">
+  <div class="container">
+    <div class="uso-grid">
+      <div>
+        <div class="reveal">
+          <p class="section-label">Instrucciones</p>
+          <h2 class="section-title">¿Cómo <em>usar?</em></h2>
+        </div>
+        <ul class="steps-list">
+          <li class="step reveal reveal-delay-1">
+            <span class="step-num">01</span>
+            <div class="step-body">
+              <p class="step-title">Consume un sobre</p>
+              <p class="step-desc">Toma un sobre antes del momento deseado para mejores resultados.</p>
+            </div>
+          </li>
+          <li class="step reveal reveal-delay-2">
+            <span class="step-num">02</span>
+            <div class="step-body">
+              <p class="step-title">Espera el efecto</p>
+              <p class="step-desc">Permite que actúe de 20 a 40 minutos para sentir la diferencia.</p>
+            </div>
+          </li>
+          <li class="step reveal reveal-delay-3">
+            <span class="step-num">03</span>
+            <div class="step-body">
+              <p class="step-title">Solo o con bebida</p>
+              <p class="step-desc">Puede tomarse directamente o disuelto en tu bebida favorita.</p>
+            </div>
+          </li>
+          <li class="step reveal reveal-delay-4">
+            <span class="step-num">04</span>
+            <div class="step-body">
+              <p class="step-title">Dosis recomendada</p>
+              <p class="step-desc">No exceder la dosis indicada. Menos es más.</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="reveal reveal-delay-2">
+        <div class="uso-aside">
+          <p class="aside-title">Recomendaciones</p>
+          <ul class="rec-list">
+            <li class="rec-item">
+              <span class="rec-dot"></span>
+              Producto exclusivo para adultos mayores de 18 años.
+            </li>
+            <li class="rec-item">
+              <span class="rec-dot"></span>
+              Evitar el consumo excesivo con bebidas alcohólicas.
+            </li>
+            <li class="rec-item">
+              <span class="rec-dot"></span>
+              No apto para personas con condiciones cardíacas o de salud delicadas.
+            </li>
+            <li class="rec-item">
+              <span class="rec-dot"></span>
+              Mantener fuera del alcance de menores.
+            </li>
+            <li class="rec-item">
+              <span class="rec-dot"></span>
+              Consulta a tu médico si tienes dudas sobre su uso.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACTO ── -->
+<section id="contacto">
+  <div class="container">
+    <div class="contact-inner">
+      <div class="reveal">
+        <p class="section-label">Escríbenos</p>
+        <h2 class="section-title" style="margin-bottom:0.5rem;">Pedidos <em>100% discretos</em></h2>
+        <p class="contact-tagline" style="margin-top:1.5rem;">Tu privacidad, nuestra prioridad</p>
+      </div>
+      <div class="contact-buttons reveal reveal-delay-1">
+        <a href="https://wa.me/521XXXXXXXXXX" class="btn-wa" target="_blank">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          WhatsApp — Escribir ahora
+        </a>
+        <a href="https://instagram.com/blackhoneymx" class="btn-ig" target="_blank">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          Instagram — @blackhoneymx
+        </a>
+      </div>
+      <p class="contact-note reveal reveal-delay-2">Sin preguntas. Sin rastros. Solo tu experiencia.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <p class="footer-logo">Black Honey MX</p>
+  <p class="footer-tagline">"Placer que se siente, secreto que se disfruta"</p>
+  <div class="footer-socials">
+    <a href="https://wa.me/521XXXXXXXXXX" target="_blank" title="WhatsApp">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    </a>
+    <a href="https://instagram.com/blackhoneymx" target="_blank" title="Instagram">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+    </a>
+  </div>
+  <p class="footer-legal">© 2025 Black Honey MX — Solo para adultos</p>
+</footer>
+
+<script>
+  // Nav scroll
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', scrollY > 60);
+  });
+
+  // Mobile nav
+  function toggleNav() {
+    document.getElementById('nav-links').classList.toggle('open');
+  }
+  function closeNav() {
+    document.getElementById('nav-links').classList.remove('open');
+  }
+
+  // Reveal on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
 </body>
 </html>
