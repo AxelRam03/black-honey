@@ -23,7 +23,7 @@ body{
   overflow-x:hidden;
 }
 
-/* LOGO BACKGROUND */
+/* FONDO LOGO */
 body::before{
   content:"";
   position:fixed;
@@ -114,7 +114,7 @@ nav{
   box-shadow:0 10px 30px rgba(201,168,76,0.3);
 }
 
-/* SECTIONS */
+/* SECCIONES */
 section{
   padding:90px 40px;
   text-align:center;
@@ -148,7 +148,7 @@ p{
 }
 
 .card:hover{
-  transform:translateY(-5px);
+  transform:translateY(-5px) scale(1.03);
   border-color:var(--gold);
 }
 
@@ -157,7 +157,7 @@ p{
   color:var(--gold);
 }
 
-/* INSTAGRAM FLOAT */
+/* BOTON IG */
 .instagram{
   position:fixed;
   bottom:20px;
@@ -171,7 +171,7 @@ p{
   box-shadow:0 10px 20px rgba(0,0,0,0.3);
 }
 
-/* ANIM */
+/* ANIMACION */
 @keyframes fadeUp{
   from{opacity:0;transform:translateY(20px);}
   to{opacity:1;transform:translateY(0);}
@@ -223,20 +223,25 @@ p{
   <h2>Elige tu experiencia</h2>
 
   <div class="pricing">
+
     <div class="card">
       <h3>1 pieza</h3>
-      <p class="price">$150</p>
+      <p class="price">$120</p>
+      <p style="font-size:12px; opacity:.6;">Prueba individual</p>
+    </div>
+
+    <div class="card" style="border:1px solid #c9a84c;">
+      <h3>2 piezas</h3>
+      <p class="price">$200</p>
+      <p style="font-size:12px; color:#c9a84c;">Más popular</p>
     </div>
 
     <div class="card">
-      <h3>5 piezas</h3>
-      <p class="price">$650</p>
+      <h3>Vitafer</h3>
+      <p class="price">$140</p>
+      <p style="font-size:12px; opacity:.6;">Energía adicional</p>
     </div>
 
-    <div class="card">
-      <h3>10 piezas</h3>
-      <p class="price">$1200</p>
-    </div>
   </div>
 </section>
 
@@ -250,8 +255,10 @@ p{
   </a>
 </section>
 
-<!-- BOTÓN FLOTANTE -->
-<a href="https://instagram.com/blackhoneymx" target="_blank" class="instagram">📷</a>
+<!-- BOTON FLOTANTE -->
+<a href="https://instagram.com/blackhoneymx" target="_blank" class="instagram">
+  📷
+</a>
 
 </body>
 </html>
