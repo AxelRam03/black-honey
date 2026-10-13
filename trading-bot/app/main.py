@@ -1,5 +1,6 @@
 import logging
 import time
+from datetime import datetime, timezone
 from .config import Config
 from .market import BinancePublic
 from .strategy import evaluate
@@ -19,6 +20,7 @@ def run():
     state = RiskState(equity=broker.quote_equity, day_start_equity=broker.quote_equity, peak_equity=broker.quote_equity)
     risk = RiskManager(cfg.risk_per_trade, cfg.max_daily_loss, cfg.max_drawdown, cfg.max_position_fraction)
     last_candle = {}
+    current_day = None
     logging.info('PAPER MODE: no se envían órdenes reales ni se usan claves privadas.')
     try:
         while True:
@@ -31,25 +33,38 @@ def run():
                     if last_candle.get(symbol) == candle_id:
                         continue
                     last_candle[symbol] = candle_id
+                    candle = candles[-1]
+                    price = candle['close']
+                    day = datetime.fromtimestamp(candle['close_time'] / 1000, tz=timezone.utc).date()
+                    if current_day != day:
+                        current_day = day
+                        state.day_start_equity = state.equity
+
                     signal = evaluate(candles)
-                    price = candles[-1]['close']
                     exit_event = broker.mark(symbol, price)
                     if exit_event:
-                        state.equity = broker.quote_equity
-                        state.peak_equity = max(state.peak_equity, state.equity)
                         store.log(symbol, 'paper_exit', exit_event)
                         logging.info('%s salida simulada: %s', symbol, exit_event)
+
+                    # Patrimonio simulado = efectivo disponible + valor de mercado de la posición abierta.
+                    state.equity = broker.quote_equity
+                    if broker.position:
+                        state.equity += broker.position.qty * price
+                    state.peak_equity = max(state.peak_equity, state.equity)
+
                     allowed, reason = risk.allowed(state)
                     store.log(symbol, 'signal', {'signal': signal, 'risk_allowed': allowed, 'risk_reason': reason})
                     if signal.get('signal') == 'LONG' and allowed and broker.position is None:
                         entry = signal['price']
                         stop = entry - cfg.stop_atr_multiple * signal['atr']
                         target = entry + cfg.take_profit_r_multiple * (entry - stop)
-                        qty = risk.position_size(broker.quote_equity, entry, stop)
+                        qty = risk.position_size(state.equity, entry, stop)
                         if qty > 0 and broker.buy(symbol, qty, entry, stop, target):
                             payload = {'qty': qty, 'entry': entry, 'stop': stop, 'target': target}
                             store.log(symbol, 'paper_entry', payload)
                             logging.info('%s compra simulada: %s', symbol, payload)
+                            state.equity = broker.quote_equity + qty * entry
+                            state.peak_equity = max(state.peak_equity, state.equity)
                 except Exception as exc:
                     logging.exception('Error procesando %s', symbol)
                     store.log(symbol, 'error', {'error': str(exc)})
