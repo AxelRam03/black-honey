@@ -48,3 +48,27 @@ def test_broker_rejects_invalid_balance_or_fee():
         PaperBroker(quote_equity=0)
     with pytest.raises(ValueError):
         PaperBroker(fee_rate=1)
+
+
+def test_intracandle_stop_is_triggered_even_if_close_recovers():
+    broker = PaperBroker(quote_equity=1000, fee_rate=0.001)
+    assert broker.buy('BTCUSDT', 1, 100, 90, 120)
+    event = broker.mark('BTCUSDT', 105, open_price=100, low=89, high=110)
+    assert event['exit'] == 'stop'
+    assert event['price'] == 90
+
+
+def test_intracandle_target_is_triggered_even_if_close_falls_back():
+    broker = PaperBroker(quote_equity=1000, fee_rate=0.001)
+    assert broker.buy('BTCUSDT', 1, 100, 90, 120)
+    event = broker.mark('BTCUSDT', 110, open_price=100, low=95, high=121)
+    assert event['exit'] == 'target'
+    assert event['price'] == 120
+
+
+def test_stop_wins_when_stop_and_target_hit_same_candle():
+    broker = PaperBroker(quote_equity=1000, fee_rate=0.001)
+    assert broker.buy('BTCUSDT', 1, 100, 90, 120)
+    event = broker.mark('BTCUSDT', 105, open_price=100, low=89, high=121)
+    assert event['exit'] == 'stop'
+    assert event['price'] == 90
