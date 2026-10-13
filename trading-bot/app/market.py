@@ -3,7 +3,7 @@ from typing import List, Dict
 
 
 class BinancePublic:
-    def __init__(self, base_url: str = 'https://api.binance.com', timeout: int = 12):
+    def __init__(self, base_url: str = 'https://data-api.binance.vision', timeout: int = 12):
         self.base_url = base_url.rstrip('/')
         self.timeout = timeout
         self.session = requests.Session()
