@@ -14,7 +14,7 @@ def _float(name, default):
 
 @dataclass(frozen=True)
 class Config:
-    base_url: str = os.getenv('BINANCE_BASE_URL', 'https://api.binance.com').rstrip('/')
+    base_url: str = os.getenv('BINANCE_BASE_URL', 'https://data-api.binance.vision').rstrip('/')
     symbols: tuple = tuple(s.strip().upper() for s in os.getenv('SYMBOLS', 'BTCUSDT,ETHUSDT').split(',') if s.strip())
     interval: str = os.getenv('INTERVAL', '1h')
     poll_seconds: int = int(os.getenv('POLL_SECONDS', '60'))
