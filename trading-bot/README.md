@@ -12,7 +12,7 @@ python -m pip install -r requirements.txt
 PYTHONPATH=. python -m app.backtest
 ```
 
-El comando consulta hasta 999 velas horarias cerradas para cada símbolo configurado (por defecto BTCUSDT y ETHUSDT) y muestra un reporte JSON con saldo inicial/final, PnL, retorno, drawdown y operaciones simuladas. Puedes configurar `SYMBOLS`, `BACKTEST_STARTING_BALANCE`, `FEE_RATE` y `BINANCE_BASE_URL` mediante variables de entorno.
+El comando consulta hasta 999 velas horarias cerradas para cada símbolo configurado (por defecto BTCUSDT y ETHUSDT) y muestra un reporte JSON con saldo inicial/final, PnL, retorno, drawdown, número de operaciones, porcentaje de aciertos, factor de beneficio y PnL promedio por operación. Puedes configurar `SYMBOLS`, `BACKTEST_STARTING_BALANCE`, `FEE_RATE` y `BINANCE_BASE_URL` mediante variables de entorno.
 
 ## Limitaciones importantes
 
