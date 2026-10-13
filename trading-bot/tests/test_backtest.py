@@ -57,10 +57,10 @@ def test_backtest_does_not_reenter_at_open_after_same_candle_exit(monkeypatch):
         for _ in range(61)
     ]
     # The existing position gaps through its stop during this candle.
-    candles.append({"open": 80.0, "high": 105.0, "low": 75.0, "close": 90.0})
+    candles.append({"open": 97.9, "high": 105.0, "low": 97.0, "close": 99.0})
     candles.append({"open": 100.0, "high": 101.0, "low": 99.0, "close": 100.0})
     result = run_backtest(candles, starting_balance=1000, fee_rate=0.001)
     assert len(result["trades"]) == 2
     assert result["trades"][0]["reason"] == "stop"
-    assert result["trades"][0]["exit"] == 80.0
+    assert result["trades"][0]["exit"] == 97.9
     assert result["trades"][1]["entry"] == 100.0
