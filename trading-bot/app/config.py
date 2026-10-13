@@ -62,5 +62,5 @@ class Config:
         parsed = urlsplit(self.base_url)
         if (parsed.scheme != "https" or parsed.hostname not in _ALLOWED_HOSTS
                 or parsed.username is not None or parsed.password is not None
-                or parsed.port not in (None, 443) or parsed.query or parsed.fragment):
+                or parsed.port not in (None, 443) or parsed.path not in ("", "/")\n                or parsed.query or parsed.fragment):
             raise ValueError("BINANCE_BASE_URL debe usar un host HTTPS oficial permitido.")
