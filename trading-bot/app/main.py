@@ -33,7 +33,7 @@ def run():
                     last_candle[symbol] = candle_id
                     signal = evaluate(candles)
                     price = candles[-1]['close']
-                    exit_event = broker.mark(price)
+                    exit_event = broker.mark(symbol, price)
                     if exit_event:
                         state.equity = broker.quote_equity
                         state.peak_equity = max(state.peak_equity, state.equity)
