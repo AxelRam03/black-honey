@@ -22,7 +22,9 @@ def run_backtest(
         raise ValueError("fee_rate must be between 0 and 1")
     if not candles:
         return {"starting_balance": starting_balance, "ending_balance": starting_balance,
-                "net_pnl": 0.0, "return_pct": 0.0, "max_drawdown_pct": 0.0, "trades": []}
+                "net_pnl": 0.0, "return_pct": 0.0, "max_drawdown_pct": 0.0,
+                "trade_count": 0, "win_rate_pct": 0.0, "profit_factor": None,
+                "average_trade_pnl": 0.0, "trades": []}
 
     balance = float(starting_balance)
     peak = balance
@@ -96,9 +98,17 @@ def run_backtest(
         close_position(float(candles[-1]["close"]), "end_of_data")
 
     net_pnl = balance - starting_balance
+    wins = [trade["pnl"] for trade in trades if trade["pnl"] > 0]
+    losses = [-trade["pnl"] for trade in trades if trade["pnl"] < 0]
+    gross_wins = sum(wins)
+    gross_losses = sum(losses)
     return {"starting_balance": float(starting_balance), "ending_balance": balance,
             "net_pnl": net_pnl, "return_pct": net_pnl / starting_balance * 100,
-            "max_drawdown_pct": max_drawdown * 100, "trades": trades}
+            "max_drawdown_pct": max_drawdown * 100, "trade_count": len(trades),
+            "win_rate_pct": len(wins) / len(trades) * 100 if trades else 0.0,
+            "profit_factor": gross_wins / gross_losses if gross_losses > 0 else None,
+            "average_trade_pnl": sum(t["pnl"] for t in trades) / len(trades) if trades else 0.0,
+            "trades": trades}
 
 
 def main() -> None:
