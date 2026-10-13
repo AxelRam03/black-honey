@@ -18,3 +18,9 @@ def test_backtest_rejects_invalid_balance():
 def test_backtest_rejects_invalid_fee():
     with pytest.raises(ValueError):
         run_backtest([], fee_rate=1)
+
+
+def test_backtest_rejects_invalid_ohlc_values():
+    candles = [{"open": 100, "high": 95, "low": 90, "close": 92}]
+    with pytest.raises(ValueError, match="invalid OHLC"):
+        run_backtest(candles)
