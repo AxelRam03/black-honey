@@ -1,0 +1,24 @@
+name: Binance Spot Bot Tests
+on:
+  push:
+    branches: [feature/binance-spot-bot]
+    paths:
+      - 'trading-bot/**'
+      - '.github/workflows/trading-bot-tests.yml'
+  pull_request:
+    paths:
+      - 'trading-bot/**'
+      - '.github/workflows/trading-bot-tests.yml'
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: trading-bot
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - run: PYTHONPATH=. pytest -q
