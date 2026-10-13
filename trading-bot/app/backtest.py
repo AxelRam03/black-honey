@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+from datetime import datetime, timezone
 from typing import Any
 
 from .market import BinancePublic
@@ -14,13 +15,7 @@ def run_backtest(
     starting_balance: float = 1000.0,
     fee_rate: float = 0.001,
 ) -> dict[str, Any]:
-    """Run a conservative, long-only candle backtest without network/API access.
-
-    Signals use only candles strictly before the current candle; entries occur at
-    the current candle open. If stop and target are both touched in one candle,
-    the stop is assumed to fill first. This is a rough research tool, not a
-    realistic exchange execution simulator.
-    """
+    """Conservative long-only candle backtest; not a live-execution simulator."""
     if starting_balance <= 0:
         raise ValueError("starting_balance must be positive")
     if not 0 <= fee_rate < 1:
@@ -31,12 +26,15 @@ def run_backtest(
 
     balance = float(starting_balance)
     peak = balance
+    day_start_balance = balance
+    current_day = None
     max_drawdown = 0.0
     position = None
     trades = []
+    risk = RiskManager()
 
     def close_position(exit_price: float, reason: str) -> None:
-        nonlocal balance, position
+        nonlocal balance, position, peak, max_drawdown
         pos = position
         entry_value = pos["qty"] * pos["entry"]
         exit_value = pos["qty"] * exit_price
@@ -45,14 +43,26 @@ def run_backtest(
         trades.append({"entry": pos["entry"], "exit": float(exit_price), "qty": pos["qty"],
                        "reason": reason, "pnl": pnl, "balance": balance})
         position = None
+        peak = max(peak, balance)
+        if peak > 0:
+            max_drawdown = max(max_drawdown, (peak - balance) / peak)
 
     for i, candle in enumerate(candles):
         high, low = float(candle["high"]), float(candle["low"])
         open_price = float(candle.get("open", candle["close"]))
         close_price = float(candle["close"])
+        if min(high, low, open_price, close_price) <= 0 or low > high:
+            raise ValueError(f"invalid OHLC values at candle index {i}")
+
+        # Use UTC calendar days when timestamps exist; synthetic test data may omit them.
+        if "close_time" in candle:
+            day = datetime.fromtimestamp(float(candle["close_time"]) / 1000, tz=timezone.utc).date()
+            if current_day != day:
+                current_day = day
+                day_start_balance = balance
 
         if position is not None:
-            # Conservative ordering if both thresholds occur in the same candle.
+            # Conservative ordering when both thresholds are hit within one candle.
             if low <= position["stop"]:
                 close_position(position["stop"], "stop")
             elif high >= position["target"]:
@@ -64,8 +74,8 @@ def run_backtest(
                 entry = open_price
                 stop = entry - 2.0 * float(signal["atr"])
                 if 0 < stop < entry:
-                    risk = RiskManager()
-                    allowed, _ = risk.allowed(RiskState(balance, balance, max(peak, balance)))
+                    state = RiskState(balance, day_start_balance, max(peak, balance))
+                    allowed, _ = risk.allowed(state)
                     qty = risk.position_size(balance, entry, stop)
                     qty = min(qty, balance / (entry * (1 + fee_rate)))
                     if allowed and qty > 0:
@@ -78,9 +88,6 @@ def run_backtest(
 
     if position is not None:
         close_position(float(candles[-1]["close"]), "end_of_data")
-        peak = max(peak, balance)
-        if peak > 0:
-            max_drawdown = max(max_drawdown, (peak - balance) / peak)
 
     net_pnl = balance - starting_balance
     return {"starting_balance": float(starting_balance), "ending_balance": balance,
