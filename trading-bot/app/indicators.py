@@ -29,7 +29,7 @@ def rsi(values: List[float], period: int = 14) -> List[float]:
         avg_gain = (avg_gain * (period - 1) + gains[i]) / period
         avg_loss = (avg_loss * (period - 1) + losses[i]) / period
         out.append(50.0 if avg_loss == 0 and avg_gain == 0 else 100.0 if avg_loss == 0 else 100 - 100 / (1 + avg_gain / avg_loss))
-    return [float('nan')] + out
+    return out
 
 
 def atr(candles: List[Dict], period: int = 14) -> List[float]:
