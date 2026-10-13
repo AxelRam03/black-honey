@@ -82,9 +82,15 @@ def run_backtest(
                         position = {"entry": entry, "stop": stop,
                                     "target": entry + 2.0 * (entry - stop), "qty": qty}
 
-        peak = max(peak, balance)
+        # Mark-to-market drawdown includes open losses and estimated round-trip fees.
+        equity = balance
+        if position is not None:
+            entry_value = position["qty"] * position["entry"]
+            market_value = position["qty"] * close_price
+            equity += market_value - entry_value - (entry_value + market_value) * fee_rate
+        peak = max(peak, equity)
         if peak > 0:
-            max_drawdown = max(max_drawdown, (peak - balance) / peak)
+            max_drawdown = max(max_drawdown, (peak - equity) / peak)
 
     if position is not None:
         close_position(float(candles[-1]["close"]), "end_of_data")
