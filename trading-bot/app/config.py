@@ -43,3 +43,11 @@ class Config:
             raise ValueError('MAX_POSITION_FRACTION debe estar entre 0 y 25%.')
         if self.paper_quote_balance <= 0:
             raise ValueError('PAPER_QUOTE_BALANCE debe ser mayor que cero.')
+        if not 0 <= self.fee_rate < 1:
+            raise ValueError('FEE_RATE debe estar entre 0 y 1.')
+        if self.poll_seconds < 10:
+            raise ValueError('POLL_SECONDS no puede ser menor que 10.')
+        if self.stop_atr_multiple <= 0 or self.take_profit_r_multiple <= 0:
+            raise ValueError('Los múltiplos de stop y objetivo deben ser positivos.')
+        if not self.base_url.startswith(('https://data-api.binance.vision', 'https://api.binance.com')):
+            raise ValueError('BINANCE_BASE_URL debe ser un endpoint HTTPS permitido.')
