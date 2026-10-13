@@ -43,7 +43,7 @@ def run():
                         state.day_start_equity = state.equity
 
                     signal = evaluate(candles)
-                    exit_event = broker.mark(symbol, price)
+                    exit_event = broker.mark(symbol, price, high=candle['high'], low=candle['low'], open_price=candle['open'])
                     if exit_event:
                         store.log(symbol, 'paper_exit', exit_event)
                         logging.info('%s salida simulada: %s', symbol, exit_event)
