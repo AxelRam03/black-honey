@@ -34,19 +34,36 @@ class PaperBroker:
         self.position = PaperPosition(symbol.upper(), float(qty), float(price), float(stop), float(target))
         return True
 
-    def mark(self, symbol, price):
-        """Evalúa la posición solo con el precio del mismo símbolo."""
+    def mark(self, symbol, price, *, high=None, low=None, open_price=None):
+        """Cierra solo la posición del símbolo correcto y evalúa el rango intravela.
+
+        Si stop y objetivo se tocan en la misma vela, asume stop primero.
+        """
         if not self.position or self.position.symbol != symbol.upper():
             return None
         if price <= 0:
             return None
+        high = price if high is None else float(high)
+        low = price if low is None else float(low)
+        open_price = price if open_price is None else float(open_price)
+        if low <= 0 or high < low or open_price <= 0:
+            return None
+
         pos = self.position
-        reason = 'stop' if price <= pos.stop else 'target' if price >= pos.target else None
+        reason, fill_price = None, None
+        if open_price <= pos.stop or low <= pos.stop:
+            reason = 'stop'
+            fill_price = min(open_price, pos.stop) if open_price <= pos.stop else pos.stop
+        elif open_price >= pos.target or high >= pos.target:
+            reason = 'target'
+            fill_price = max(open_price, pos.target) if open_price >= pos.target else pos.target
         if reason is None:
             return None
-        proceeds = pos.qty * price * (1 - self.fee_rate)
+
+        proceeds = pos.qty * fill_price * (1 - self.fee_rate)
         pnl = proceeds - pos.qty * pos.entry * (1 + self.fee_rate)
         self.quote_equity += proceeds
         self.realized_pnl += pnl
         self.position = None
-        return {'symbol': pos.symbol, 'exit': reason, 'price': price, 'pnl': pnl, 'equity': self.quote_equity}
+        return {'symbol': pos.symbol, 'exit': reason, 'price': fill_price,
+                'pnl': pnl, 'equity': self.quote_equity}
