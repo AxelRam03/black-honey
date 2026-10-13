@@ -1,0 +1,36 @@
+name: Binance Spot Historical Backtest
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/binance-spot-bot]
+    paths:
+      - 'trading-bot/app/backtest.py'
+      - 'trading-bot/app/market.py'
+      - 'trading-bot/app/strategy.py'
+      - 'trading-bot/app/indicators.py'
+      - '.github/workflows/trading-bot-backtest.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: trading-bot
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - name: Run historical paper backtest using public market data
+        run: PYTHONPATH=. python -m app.backtest | tee backtest-report.json
+      - name: Upload backtest report
+        uses: actions/upload-artifact@v4
+        with:
+          name: binance-spot-backtest-report
+          path: trading-bot/backtest-report.json
+          if-no-files-found: error
