@@ -10,6 +10,13 @@ on:
       - 'trading-bot/app/strategy.py'
       - 'trading-bot/app/indicators.py'
       - '.github/workflows/trading-bot-backtest.yml'
+  pull_request:
+    paths:
+      - 'trading-bot/app/backtest.py'
+      - 'trading-bot/app/market.py'
+      - 'trading-bot/app/strategy.py'
+      - 'trading-bot/app/indicators.py'
+      - '.github/workflows/trading-bot-backtest.yml'
 
 permissions:
   contents: read
