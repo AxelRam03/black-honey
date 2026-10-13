@@ -123,7 +123,7 @@ def main() -> None:
     symbols = [s.strip().upper() for s in os.getenv("SYMBOLS", "BTCUSDT,ETHUSDT").split(",") if s.strip()]
     starting_balance = float(os.getenv("BACKTEST_STARTING_BALANCE", "1000"))
     fee_rate = float(os.getenv("FEE_RATE", "0.001"))
-    base_url = os.getenv("BINANCE_BASE_URL", "https://api.binance.com").rstrip("/")
+    base_url = os.getenv("BINANCE_BASE_URL", "https://data-api.binance.vision").rstrip("/")
     api = BinancePublic(base_url)
     reports = {}
     for symbol in symbols:
