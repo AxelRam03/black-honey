@@ -15,9 +15,9 @@ def test_daily_loss_limit_blocks():
     assert not allowed and reason == 'daily_loss_limit'
 
 
-def test_drawdown_limit_blocks():
-    manager = RiskManager(max_drawdown=0.03)
-    allowed, reason = manager.allowed(RiskState(969, 1000, 1000))
+def test_drawdown_limit_blocks_independently_of_daily_loss():
+    manager = RiskManager(max_daily_loss=0.01, max_drawdown=0.03)
+    allowed, reason = manager.allowed(RiskState(969, 950, 1000))
     assert not allowed and reason == 'drawdown_limit'
 
 
