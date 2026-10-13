@@ -64,14 +64,20 @@ def run_backtest(
                 current_day = day
                 day_start_balance = balance
 
+        exited_this_candle = False
         if position is not None:
-            # Conservative ordering when both thresholds are hit within one candle.
+            # Conservative ordering when both thresholds occur within one candle.
             if low <= position["stop"]:
-                close_position(position["stop"], "stop")
+                stop_price = min(open_price, position["stop"]) if open_price <= position["stop"] else position["stop"]
+                close_position(stop_price, "stop")
+                exited_this_candle = True
             elif high >= position["target"]:
-                close_position(position["target"], "target")
+                target_price = max(open_price, position["target"]) if open_price >= position["target"] else position["target"]
+                close_position(target_price, "target")
+                exited_this_candle = True
 
-        if position is None and i >= 60:
+        # A position closed later in this candle cannot be reopened at its earlier open.
+        if position is None and not exited_this_candle and i >= 60:
             signal = evaluate(candles[:i])
             if signal.get("signal") == "LONG":
                 entry = open_price
