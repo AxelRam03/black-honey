@@ -20,6 +20,7 @@ def run():
     state = RiskState(equity=broker.quote_equity, day_start_equity=broker.quote_equity, peak_equity=broker.quote_equity)
     risk = RiskManager(cfg.risk_per_trade, cfg.max_daily_loss, cfg.max_drawdown, cfg.max_position_fraction)
     last_candle = {}
+    last_prices = {}
     current_day = None
     logging.info('PAPER MODE: no se envían órdenes reales ni se usan claves privadas.')
     try:
@@ -35,6 +36,7 @@ def run():
                     last_candle[symbol] = candle_id
                     candle = candles[-1]
                     price = candle['close']
+                    last_prices[symbol] = price
                     day = datetime.fromtimestamp(candle['close_time'] / 1000, tz=timezone.utc).date()
                     if current_day != day:
                         current_day = day
@@ -49,7 +51,8 @@ def run():
                     # Patrimonio simulado = efectivo disponible + valor de mercado de la posición abierta.
                     state.equity = broker.quote_equity
                     if broker.position:
-                        state.equity += broker.position.qty * price
+                        position_price = last_prices.get(broker.position.symbol, broker.position.entry)
+                        state.equity += broker.position.qty * position_price
                     state.peak_equity = max(state.peak_equity, state.equity)
 
                     allowed, reason = risk.allowed(state)
