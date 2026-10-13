@@ -14,6 +14,17 @@ PYTHONPATH=. python -m app.backtest
 
 El comando consulta hasta 999 velas horarias cerradas para cada símbolo configurado (por defecto BTCUSDT y ETHUSDT) y muestra un reporte JSON con saldo inicial/final, PnL, retorno, drawdown, número de operaciones, porcentaje de aciertos, factor de beneficio y PnL promedio por operación. Puedes configurar `SYMBOLS`, `BACKTEST_STARTING_BALANCE`, `FEE_RATE` y `BINANCE_BASE_URL` mediante variables de entorno.
 
+## Último resultado de validación (13 de octubre de 2026)
+
+Ejecución automática con hasta 999 velas horarias cerradas por par, saldo simulado inicial de 1,000 USDT por símbolo y comisión configurada de 0.1% por lado:
+
+| Par | PnL neto | Retorno | Operaciones | Aciertos | Factor de beneficio | Drawdown máximo |
+|---|---:|---:|---:|---:|---:|---:|
+| BTCUSDT | -14.00 USDT | -1.40% | 20 | 30.0% | 0.61 | 1.73% |
+| ETHUSDT | -24.95 USDT | -2.50% | 26 | 26.9% | 0.53 | 2.70% |
+
+**Decisión:** estos resultados son negativos; esta estrategia no debe pasar a operaciones con dinero real. El backtest es limitado (muestra reciente, sin deslizamiento ni liquidez real) y no demuestra rentabilidad futura. El resultado sirve para detectar que aún hay trabajo de investigación, no como promesa de ingresos.
+
 ## Limitaciones importantes
 
 - Es una primera herramienta de investigación, no una garantía de rentabilidad ni una simulación exacta de exchange.
