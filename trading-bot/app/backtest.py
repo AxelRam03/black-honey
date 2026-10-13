@@ -53,7 +53,8 @@ def run_backtest(
         high, low = float(candle["high"]), float(candle["low"])
         open_price = float(candle.get("open", candle["close"]))
         close_price = float(candle["close"])
-        if min(high, low, open_price, close_price) <= 0 or low > high:
+        if (min(high, low, open_price, close_price) <= 0 or low > high
+                or not low <= open_price <= high or not low <= close_price <= high):
             raise ValueError(f"invalid OHLC values at candle index {i}")
 
         # Use UTC calendar days when timestamps exist; synthetic test data may omit them.
