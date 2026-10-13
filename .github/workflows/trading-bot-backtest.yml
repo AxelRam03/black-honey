@@ -27,7 +27,21 @@ jobs:
           python-version: '3.12'
       - run: pip install -r requirements.txt
       - name: Run historical paper backtest using public market data
-        run: PYTHONPATH=. python -m app.backtest | tee backtest-report.json
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -m app.backtest | tee backtest-report.json
+          {
+            echo '## Binance Spot Historical Backtest'
+            echo
+            echo 'Historical paper simulation only; not a guarantee of future returns.'
+            echo
+            echo '### JSON report'
+            echo '```json'
+            cat backtest-report.json
+            echo
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
       - name: Upload backtest report
         uses: actions/upload-artifact@v4
         with:
