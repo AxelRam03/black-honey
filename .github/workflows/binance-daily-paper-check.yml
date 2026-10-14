@@ -1,0 +1,67 @@
+name: Binance Spot Daily Paper Check
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Daily at 12:00 UTC (06:00 in Mexico City during standard time).
+    - cron: "0 12 * * *"
+  push:
+    branches: [feature/binance-spot-bot]
+    paths:
+      - 'trading-bot/app/backtest.py'
+      - 'trading-bot/app/market.py'
+      - 'trading-bot/app/strategy.py'
+      - 'trading-bot/app/indicators.py'
+      - '.github/workflows/binance-daily-paper-check.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: binance-daily-paper-check
+  cancel-in-progress: false
+
+jobs:
+  daily-paper-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: trading-bot
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+      - name: Run fresh historical paper backtest with public market data
+        shell: bash
+        env:
+          PAPER_QUOTE_BALANCE: "100"
+          SYMBOLS: "BTCUSDT,ETHUSDT"
+          FEE_RATE: "0.001"
+          BINANCE_BASE_URL: "https://data-api.binance.vision"
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -m app.backtest | tee daily-paper-report.json
+          {
+            echo '## Black-Honey daily paper check'
+            echo
+            echo '- Mode: historical simulation only; no live orders or private API keys.'
+            echo '- Market data: public Binance market data.'
+            echo '- Important: historical results are not a forecast or a guarantee of profit.'
+            echo
+            echo '### Report'
+            echo '~~~json'
+            cat daily-paper-report.json
+            echo
+            echo '~~~'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Save report
+        uses: actions/upload-artifact@v4
+        with:
+          name: black-honey-daily-paper-report
+          path: trading-bot/daily-paper-report.json
+          if-no-files-found: error
+          retention-days: 30
