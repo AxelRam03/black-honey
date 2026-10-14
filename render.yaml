@@ -1,0 +1,35 @@
+# Black-Honey cloud worker (paper trading only)
+# Deploy this blueprint only after reviewing the hosting provider's current pricing.
+# A persistent disk is required so SQLite paper-trading history survives restarts.
+services:
+  - type: worker
+    name: black-honey-paper
+    runtime: docker
+    dockerfilePath: ./trading-bot/Dockerfile
+    dockerContext: ./trading-bot
+    plan: starter
+    disk:
+      name: black-honey-paper-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: PAPER_QUOTE_BALANCE
+        value: "100"
+      - key: SYMBOLS
+        value: BTCUSDT,ETHUSDT
+      - key: BINANCE_BASE_URL
+        value: https://data-api.binance.vision
+      - key: DB_PATH
+        value: /var/data/bot.sqlite3
+      - key: POLL_SECONDS
+        value: "60"
+      - key: FEE_RATE
+        value: "0.001"
+      - key: RISK_PER_TRADE
+        value: "0.001"
+      - key: MAX_DAILY_LOSS
+        value: "0.005"
+      - key: MAX_DRAWDOWN
+        value: "0.02"
+      - key: MAX_POSITION_FRACTION
+        value: "0.10"
