@@ -1,0 +1,61 @@
+name: Black-Honey Hourly Paper Monitor
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Runs hourly on GitHub-hosted runners; not a persistent 24/7 process.
+    - cron: "17 * * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: black-honey-hourly-paper-monitor
+  cancel-in-progress: false
+
+jobs:
+  paper-monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout bot code
+        uses: actions/checkout@v4
+        with:
+          ref: feature/binance-spot-bot
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        working-directory: trading-bot
+        run: python -m pip install -r requirements.txt
+      - name: Run paper backtest on public market data
+        working-directory: trading-bot
+        env:
+          PAPER_QUOTE_BALANCE: "100"
+          SYMBOLS: "BTCUSDT,ETHUSDT"
+          FEE_RATE: "0.001"
+          BINANCE_BASE_URL: "https://data-api.binance.vision"
+          PYTHONPATH: .
+        run: |
+          set -euo pipefail
+          python -m app.backtest | tee hourly-paper-report.json
+          {
+            echo "## Black-Honey hourly paper report"
+            echo
+            echo "- Mode: historical paper simulation only."
+            echo "- Live orders: disabled; no private exchange API keys are used."
+            echo "- This is a periodic backtest, not a continuously running trading process."
+            echo
+            echo '~~~json'
+            cat hourly-paper-report.json
+            echo
+            echo '~~~'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Save report for 7 days
+        uses: actions/upload-artifact@v4
+        with:
+          name: black-honey-paper-report-${{ github.run_id }}
+          path: trading-bot/hourly-paper-report.json
+          if-no-files-found: error
+          retention-days: 7
