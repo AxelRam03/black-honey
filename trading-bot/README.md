@@ -13,16 +13,16 @@ cd trading-bot
 py -3.12 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
-$env: PAPER_QUOTE_BALANCE = "100"
-$env: SYMBOLS = "BTCUSDT,ETHUSDT"
-$env: DB_PATH = "bot.sqlite3"
-$env: BINANCE_BASE_URL = "https://data-api.binance.vision"
-$env: POLL_SECONDS = "60"
-$env: FEE_RATE = "0.001"
-$env: RISK_PER_TRADE = "0.0025"
-$env: MAX_DAILY_LOSS = "0.01"
-$env: MAX_DRAWDOWN = "0.03"
-$env: MAX_POSITION_FRACTION = "0.25"
+$env:PAPER_QUOTE_BALANCE = "100"
+$env:SYMBOLS = "BTCUSDT,ETHUSDT"
+$env:DB_PATH = "bot.sqlite3"
+$env:BINANCE_BASE_URL = "https://data-api.binance.vision"
+$env:POLL_SECONDS = "60"
+$env:FEE_RATE = "0.001"
+$env:RISK_PER_TRADE = "0.0025"
+$env:MAX_DAILY_LOSS = "0.01"
+$env:MAX_DRAWDOWN = "0.03"
+$env:MAX_POSITION_FRACTION = "0.25"
 PYTHONPATH=. python -m app.main
 ```
 
