@@ -10,7 +10,7 @@ class RiskState:
 
 
 class RiskManager:
-    def __init__(self, risk_per_trade=0.0025, max_daily_loss=0.01, max_drawdown=0.03, max_position_fraction=0.25):
+    def __init__(self, risk_per_trade=0.001, max_daily_loss=0.005, max_drawdown=0.02, max_position_fraction=0.10):
         self.risk_per_trade = risk_per_trade
         self.max_daily_loss = max_daily_loss
         self.max_drawdown = max_drawdown
