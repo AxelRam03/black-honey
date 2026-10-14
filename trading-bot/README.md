@@ -2,6 +2,36 @@
 
 Este directorio contiene un prototipo experimental de Binance Spot con velas de 1 hora. El backtest y el bot en modo paper no envían órdenes reales.
 
+## Ejecutar el bot en simulación (sin dinero real)
+
+Este proceso necesita estar encendido en una computadora o servidor con Python 3.12+ e Internet. **No se ejecuta directamente como proceso permanente dentro de la app de iPhone.** No requiere iniciar sesión en Binance ni crear claves API.
+
+En Windows, abre PowerShell en la carpeta del repositorio y ejecuta:
+
+```powershell
+cd trading-bot
+py -3.12 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+$env: PAPER_QUOTE_BALANCE = "100"
+$env: SYMBOLS = "BTCUSDT,ETHUSDT"
+$env: DB_PATH = "bot.sqlite3"
+$env: BINANCE_BASE_URL = "https://data-api.binance.vision"
+$env: POLL_SECONDS = "60"
+$env: FEE_RATE = "0.001"
+$env: RISK_PER_TRADE = "0.0025"
+$env: MAX_DAILY_LOSS = "0.01"
+$env: MAX_DRAWDOWN = "0.03"
+$env: MAX_POSITION_FRACTION = "0.25"
+PYTHONPATH=. python -m app.main
+```
+
+Si PowerShell bloquea la activación del entorno virtual, puedes saltarte la activación y usar `.venv\Scripts\python.exe -m pip install -r requirements.txt` y después `.venv\Scripts\python.exe -m app.main`.
+
+Para detenerlo, pulsa `Ctrl+C`. El historial de eventos se guarda en `bot.sqlite3` (o en la ruta indicada por `DB_PATH`). No borres ni compartas ese archivo si quieres conservar tu historial local.
+
+**Importante:** el bot solo simula compras y ventas; no envía órdenes reales. Debe mantenerse así mientras el backtest muestre pérdidas y no se haya validado con datos fuera de muestra y condiciones realistas. La simulación no equivale a una cuenta demo de Binance ni reproduce por completo las ejecuciones del mercado.
+
 ## Ejecutar backtest histórico
 
 Requiere Python 3.12+ y conexión a Internet para descargar velas públicas; no requiere cuenta de Binance ni claves API.
