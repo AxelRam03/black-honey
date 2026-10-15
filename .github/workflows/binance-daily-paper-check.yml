@@ -12,6 +12,7 @@ on:
       - 'trading-bot/app/market.py'
       - 'trading-bot/app/strategy.py'
       - 'trading-bot/app/indicators.py'
+      - 'trading-bot/app/research.py'
       - '.github/workflows/binance-daily-paper-check.yml'
 
 permissions:
@@ -45,6 +46,7 @@ jobs:
         run: |
           set -euo pipefail
           PYTHONPATH=. python -m app.backtest | tee daily-paper-report.json
+          PYTHONPATH=. python -m app.research | tee strategy-research-report.json
           {
             echo '## Black-Honey daily paper check'
             echo
@@ -52,9 +54,16 @@ jobs:
             echo '- Market data: public Binance market data.'
             echo '- Important: historical results are not a forecast or a guarantee of profit.'
             echo
-            echo '### Report'
+            echo '### Baseline backtest'
             echo '~~~json'
             cat daily-paper-report.json
+            echo
+            echo '~~~'
+            echo
+            echo '### Strategy parameter sensitivity experiment'
+            echo 'Five predefined EMA/RSI filters are compared on the same recent sample. This is exploratory and may overfit; it is not proof of profitability.'
+            echo '~~~json'
+            cat strategy-research-report.json
             echo
             echo '~~~'
           } >> "$GITHUB_STEP_SUMMARY"
@@ -62,6 +71,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: black-honey-daily-paper-report
-          path: trading-bot/daily-paper-report.json
+          path: |
+            trading-bot/daily-paper-report.json
+            trading-bot/strategy-research-report.json
           if-no-files-found: error
           retention-days: 30
